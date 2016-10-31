@@ -4,7 +4,7 @@ extern cv::Mat gray_prev ,gray,gray_copy;
 //extern int fxy_max , fxy_min;
 extern cv::Mat cluster;
 
-extern cv::Mat pre_frame,copy_frame, canny_frame,b_frame;
+//extern cv::Mat pre_frame,copy_frame, canny_frame,b_frame;
 
 
 void draw_arrow(cv::Mat & frame , cv::Point2f fxy , cv::Point2f tail , cv::Scalar arrow_color)
@@ -41,7 +41,7 @@ int tracking(cv::Mat & frame , std::vector<cv::Point2f> & head_point_track , cv:
 
     if (gray_prev.empty())
     {
-        frame.copyTo(pre_frame);
+//        frame.copyTo(pre_frame);//canny
         gray.copyTo(gray_prev);
         gray.copyTo(gray_copy);//用于arrow
         return 0;
@@ -79,7 +79,7 @@ int tracking(cv::Mat & frame , std::vector<cv::Point2f> & head_point_track , cv:
     cluster.at<uchar>(fxy) = 0;
 
 
-    frame.copyTo(pre_frame);
+//    frame.copyTo(pre_frame);//canny
     swap(gray_prev, gray);
     return 0;
 }
@@ -91,13 +91,13 @@ int tracking(cv::Mat & frame , std::vector<Corner_point> & head_point_track , cv
 
     if (gray_prev.empty())
     {
-        frame.copyTo(pre_frame);
+//        frame.copyTo(pre_frame);//canny
         gray.copyTo(gray_prev);
         gray.copyTo(gray_copy);//用于arrow
         return 0;
     }
     gray_prev.copyTo(gray_copy);//用于arrow
-    frame.copyTo(copy_frame);
+//    frame.copyTo(copy_frame);//canny
 
     //跟踪
     cv::calcOpticalFlowFarneback(gray_prev,gray,flow,0.5,3,15,3,5,1.2,0);
@@ -141,22 +141,25 @@ int tracking(cv::Mat & frame , std::vector<Corner_point> & head_point_track , cv
     }
 
 
-    cv::bilateralFilter( copy_frame, b_frame, 5, 100, 25/2 );
-//    cv::imshow("b",b);
-    cv::Canny(b_frame,canny_frame,10,30);
-//    cv::imshow("out",out);
+    //show canny
+//    cv::bilateralFilter( copy_frame, b_frame, 5, 100, 25/2 );
+////    cv::imshow("b",b);
+//    cv::Canny(b_frame,canny_frame,10,30);
+////    cv::imshow("out",out);
+////    cv::waitKey(0);
+
+
+//    cv::Point2f mean_vector;
+//    mean_vector = get_mean_vector(head_point_track);
+//    cv::Point2f temp_headpoint =head_point+mean_vector;
+//    cv::Mat temp_canny = canny_frame(cv::Rect(temp_headpoint.x -50,temp_headpoint.y - 50,100,100));
+//    cv::Mat weight_frame;
+//    cvtColor(temp_canny, weight_frame, CV_GRAY2BGR);
+//    cv::line(weight_frame,cv::Point2f(50-20*mean_vector.x,50-20*mean_vector.y),cv::Point2f(50+20*mean_vector.x,50+20*mean_vector.y),cv::Scalar(0,0,255));
+//    cv::Mat temp_frame = copy_frame(cv::Rect(temp_headpoint.x -50,temp_headpoint.y - 50,100,100));
+//    addWeighted(temp_frame,0.5,weight_frame,0.5,0.0,temp_frame);
+//    cv::imshow("canny_test",copy_frame);
 //    cv::waitKey(0);
-    cv::Point2f mean_vector;
-    mean_vector = get_mean_vector(head_point_track);
-    cv::Point2f temp_headpoint =head_point+mean_vector;
-    cv::Mat temp_canny = canny_frame(cv::Rect(temp_headpoint.x -50,temp_headpoint.y - 50,100,100));
-    cv::Mat weight_frame;
-    cvtColor(temp_canny, weight_frame, CV_GRAY2BGR);
-    cv::line(weight_frame,cv::Point2f(50-20*mean_vector.x,50-20*mean_vector.y),cv::Point2f(50/*+20*mean_vector.x*/,50/*+20*mean_vector.y*/),cv::Scalar(0,0,255));
-    cv::Mat temp_frame = copy_frame(cv::Rect(temp_headpoint.x -50,temp_headpoint.y - 50,100,100));
-    addWeighted(temp_frame,0.5,weight_frame,0.5,0.0,temp_frame);
-    cv::imshow("canny_test",copy_frame);
-    cv::waitKey(0);
 
 
     cv::Point2f fxy = flow.at<cv::Point2f>(head_point.y, head_point.x);
@@ -167,7 +170,7 @@ int tracking(cv::Mat & frame , std::vector<Corner_point> & head_point_track , cv
     cluster.at<cv::Vec3b>(fxy) = cv::Vec3b(0,0,0);
 
 
-    frame.copyTo(pre_frame);
+//    frame.copyTo(pre_frame);//canny
     swap(gray_prev, gray);
     return cluster_num;
 }

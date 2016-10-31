@@ -31,7 +31,7 @@ cv::Mat gray_prev ,gray,gray_copy;
 //int fxy_max , fxy_min;
 cv::Mat cluster;
 
-cv::Mat pre_frame,copy_frame , canny_frame , b_frame;
+//cv::Mat pre_frame,copy_frame , canny_frame , b_frame;
 
 
 
